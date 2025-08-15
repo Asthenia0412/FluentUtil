@@ -33,7 +33,7 @@ public class FluentCondition<T> {
     public FluentCondition<T> when(Predicate<T> predicate, Consumer<T> action) {
         if (!shortCircuit && predicate.test(value)) {
             logger.debug("Condition met for value: {}, context: {}", value, context.get());
-            action.accept(value);
+            action.accept(value); // 调用外部传入的 方法
         }
         return this;
     }
@@ -103,9 +103,9 @@ public class FluentCondition<T> {
     // 12. 类型转换
     public <R> FluentCondition<R> map(Function<T, R> mapper) {
         if (!shortCircuit) {
-            R newValue = mapper.apply(value);
+            R newValue = mapper.apply(value); // 执行你传入的转换逻辑，比如 Integer::parseInt
             logger.debug("Mapped value from {} to {}, context: {}", value, newValue, context.get());
-            return new FluentCondition<>(newValue);
+            return new FluentCondition<>(newValue); //  用转换后的值，构造一个新的 FluentCondition<R>
         }
         return new FluentCondition<>(null);
     }
@@ -119,7 +119,7 @@ public class FluentCondition<T> {
 
     // 14. 获取结果
     public T get() {
-        return value;
+        return value; // 这里注意：哪怕我们用map转换的类型，get也是获取当前这个FluentCondition的value
     }
 
     // 获取调用方法信息，用于异常日志
